@@ -38,7 +38,7 @@ namespace spe.main
 
         private void save()
         {
-            StreamWriter __sr = new StreamWriter(String.Format("identity.{0:yyyyMMddHHmmss}.txt", DateTime.Now), false);
+            StreamWriter __sr = new StreamWriter(String.Format("../../output/identity.{0:yyyyMMddHHmmss}.txt", DateTime.Now), false);
             __sr.WriteLine(String.Format("Nom : {0}", Nom));
             __sr.WriteLine(String.Format("Prenom : {0}", Prenom));
             __sr.WriteLine(String.Format("DateNaissance : {0}", DateNaissance));
