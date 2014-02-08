@@ -270,16 +270,26 @@ namespace spe.main
         {
             string __password = "";
             string __passwordTemp = "";
-            __passwordTemp += __majuscules[Random.Next(__majuscules.Length)];
-            __passwordTemp += __majuscules[Random.Next(__majuscules.Length)];
-            __passwordTemp += __majuscules[Random.Next(__majuscules.Length)];
-            __passwordTemp += __minuscules[Random.Next(__minuscules.Length)];
-            __passwordTemp += __minuscules[Random.Next(__minuscules.Length)];
-            __passwordTemp += __minuscules[Random.Next(__minuscules.Length)];
-            __passwordTemp += __entiers[Random.Next(__entiers.Length)];
-            __passwordTemp += __entiers[Random.Next(__entiers.Length)];
-            __passwordTemp += __speciaux[Random.Next(__speciaux.Length)];
-            __passwordTemp += __speciaux[Random.Next(__speciaux.Length)];
+            int __nbre = 1;
+            while (__nbre <= 3)
+            {
+                __passwordTemp += __majuscules[Random.Next(__majuscules.Length)]; __nbre++;
+            }
+            __nbre = 1;
+            while (__nbre <= 3)
+            {
+                __passwordTemp += __minuscules[Random.Next(__minuscules.Length)]; __nbre++;
+            }
+            __nbre = 1;
+            while (__nbre <= 2)
+            {
+                __passwordTemp += __entiers[Random.Next(__entiers.Length)]; __nbre++;
+            }
+            __nbre = 1;
+            while (__nbre <= 2)
+            {
+                __passwordTemp += __speciaux[Random.Next(__speciaux.Length)]; __nbre++;
+            }
             while (__passwordTemp != "")
             {
                 int __index = Random.Next(__passwordTemp.Length);
