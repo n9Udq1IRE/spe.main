@@ -4,11 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Net;
 
 namespace spe.main
 {
     class Identity
     {
+        // Types
+        public enum EnumSexe
+        {
+            Masculin = 0,
+            Feminin = 1
+        }
+
+        // Attributs
         private Random Random = new Random();
         private char[] __speciaux = { '~', '!', '@', '#', '$', '%', '^', '*', '(', ')', '_', '-', '+', '=', '{', '}', '[', ']', '|', ':', ';', '"', ',', '?' };
         private char[] __entiers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
@@ -19,22 +28,27 @@ namespace spe.main
         private char[] __minusculesConsonnes = { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z' };
         private char[] __minusculesVoyelles = { 'a', 'e', 'i', 'o', 'u', 'y' };
 
+        public DateTime DateNaissance { get; set; }
+        public EnumSexe Sexe { get; set; }
         public string Nom { get; set; }
         public string Prenom { get; set; }
-        public DateTime DateNaissance { get; set; }
         public string AdresseMail { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
 
+        // Constructeurs
         public Identity()
         {
+            DateNaissance = getDateNaissance(18, 80);
+            Sexe = (Random.Next(2) == 0) ? EnumSexe.Masculin : EnumSexe.Feminin;
             Nom = getNom(5 + Random.Next(10));
-            Prenom = getPrenom(5 + Random.Next(10));
-            DateNaissance = getDateNaissance(18, 18 + Random.Next(50));
+            Prenom = getPrenom();
             AdresseMail = Prenom.ToLower() + "." + Nom.ToLower() + "@unimedia.fr";
             Login = getLogin();
             Password = getPassword();
         }
+
+        // Fonctions Publiques
 
         public void save(string __file = "")
         {
@@ -43,15 +57,19 @@ namespace spe.main
                 __file = String.Format("../../output/identity.{0:yyyyMMddHHmmss}.txt", DateTime.Now);
             }
             StreamWriter __sr = new StreamWriter(__file, false);
+            __sr.WriteLine(String.Format("DateNaissance : {0}", DateNaissance));
+            string __temp = (Sexe == EnumSexe.Masculin) ? "Masculin" : "Feminin";
+            __sr.WriteLine(String.Format("Sexe : {0}", __temp));
             __sr.WriteLine(String.Format("Nom : {0}", Nom));
             __sr.WriteLine(String.Format("Prenom : {0}", Prenom));
-            __sr.WriteLine(String.Format("DateNaissance : {0}", DateNaissance));
             __sr.WriteLine(String.Format("AdresseMail : {0}", AdresseMail));
             __sr.WriteLine(String.Format("Login : {0}", Login));
             __sr.WriteLine(String.Format("Password : {0}", Password));
             __sr.Close();
             __sr.Dispose();
         }
+
+        // Fonctions Privées
 
         private string getNom(int __longueur)
         {
@@ -71,7 +89,7 @@ namespace spe.main
             return __nom;
         }
 
-        private string getPrenom(int __longueur)
+        private string getPrenomAleatoire(int __longueur)
         {
             string __prenom = "";
             if (Random.Next(10) % 2 == 0)
@@ -97,10 +115,48 @@ namespace spe.main
             return __prenom;
         }
 
+        private string getPrenom()
+        {
+            string __prenom = getPrenomAleatoire(5 + Random.Next(10));
+            // http://meilleursprenoms.com
+            int __page = 1;
+            int __pageMax = Random.Next(5);
+            List<string> __prenoms = new List<string>();
+            WebClient __wc = new WebClient();
+            bool __trouve = true;
+            while (__trouve && __page <= __pageMax)
+            {
+                __trouve = false;
+                string __source = __wc.DownloadString(String.Format("http://meilleursprenoms.com/stats/topannee.php3?annee={0}&page={1}", DateNaissance.Year, __page));
+                List<string> __valeurs = new List<string>();
+                getListeFromModele(__source, "<table width=\"300\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\">[*]</table>", ref __valeurs, true);
+                if (__valeurs.Count == 1)
+                {
+                    __source = __valeurs[0];
+                    getListeFromModele(__source, "<td class=\"mpfont\">[*]</td>", ref __valeurs, true);
+                    if (__valeurs.Count == 3)
+                    {
+                        __source = (Sexe == EnumSexe.Masculin) ? __source = __valeurs[1] : __source = __valeurs[2];
+                        getListeFromModele(__source, "<a href=\"/stats/prenom.php3/[*]\">", ref __valeurs, false);
+                        __prenoms.AddRange(__valeurs);
+                        __trouve = true;
+                        __page++;
+                    }
+                }
+            }
+            __wc.Dispose();
+            if (__prenoms.Count > 0)
+            {
+                __prenom = __prenoms[Random.Next(__prenoms.Count)];
+            }
+            
+            return __prenom;
+        }
+
         private DateTime getDateNaissance(int __ageMin, int __ageMax)
         {
             DateTime __dateNaissance = DateTime.Now;
-            __dateNaissance = __dateNaissance.AddYears(-__ageMin + Random.Next(__ageMax - __ageMin));
+            __dateNaissance = __dateNaissance.AddYears(-__ageMin - Random.Next(__ageMax - __ageMin));
             int __signe = (Random.Next(10) % 2 == 0) ? 1 : -1;
             __dateNaissance = __dateNaissance.AddDays(__signe * Random.Next(365));
             __signe = (Random.Next(10) % 2 == 0) ? 1 : -1;
@@ -189,6 +245,40 @@ namespace spe.main
             }
 
             return __password;
+        }
+
+        private void getListeFromModele(string __source, string __modele, ref List<string> __liste, bool __avec)
+        {
+            __liste.Clear();
+            string __debut = "";
+            string __fin = "";
+            int __index = __modele.IndexOf("[*]");
+            if (__index != -1)
+            {
+                __debut = __modele.Substring(0, __index);
+                __fin = __modele.Substring(__index + 3);
+                string __valeur = "";
+                int __indexDebut = 0;
+                int __indexFin = 0;
+                __indexDebut = __source.IndexOf(__debut);
+                if (__indexDebut != -1)
+                {
+                    __indexFin = __source.IndexOf(__fin, __indexDebut + __debut.Length);
+                    while (__indexDebut != -1 && __indexFin != -1)
+                    {
+                        if (__avec)
+                            __valeur = __source.Substring(__indexDebut, (__indexFin - __indexDebut) + __fin.Length);
+                        else
+                            __valeur = __source.Substring(__indexDebut + __debut.Length, __indexFin - __indexDebut - __debut.Length);
+                        __liste.Add(__valeur);
+                        __indexDebut = __source.IndexOf(__debut, __indexFin + __fin.Length);
+                        if (__indexDebut != -1)
+                        {
+                            __indexFin = __source.IndexOf(__fin, __indexDebut + __debut.Length);
+                        }
+                    }
+                }
+            }
         }
 
     }
