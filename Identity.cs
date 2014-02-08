@@ -10,14 +10,21 @@ namespace spe.main
 {
     class Identity
     {
-        // Types
+
+        #region Types
+        
         public enum EnumSexe
         {
             Masculin = 0,
             Feminin = 1
         }
 
-        // Attributs Privés
+        #endregion
+
+        #region Attributs
+
+        #region Attributs.Privés
+
         private Random Random = new Random();
         private char[] __speciaux = { '~', '!', '@', '#', '$', '%', '^', '*', '(', ')', '_', '-', '+', '=', '{', '}', '[', ']', '|', ':', ';', '"', ',', '?' };
         private char[] __entiers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
@@ -28,7 +35,10 @@ namespace spe.main
         private char[] __minusculesConsonnes = { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z' };
         private char[] __minusculesVoyelles = { 'a', 'e', 'i', 'o', 'u', 'y' };
 
-        // Attributs Publiques
+        #endregion
+
+        #region Attributs.Publiques
+
         public DateTime DateNaissance { get; set; }
         public EnumSexe Sexe { get; set; }
         public string Nom { get; set; }
@@ -37,7 +47,15 @@ namespace spe.main
         public string Login { get; set; }
         public string Password { get; set; }
 
-        // Constructeurs
+        #endregion
+
+        #endregion
+
+        #region Constructeurs
+
+        /// <summary>
+        /// 
+        /// </summary>
         public Identity()
         {
             DateNaissance = getDateNaissance(18, 80);
@@ -49,8 +67,16 @@ namespace spe.main
             Password = getPassword();
         }
 
-        // Fonctions Publiques
+        #endregion
 
+        #region Fonctions
+
+        #region Fonctions.Publiques
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="__file"></param>
         public void save(string __file = "")
         {
             if (__file == "")
@@ -70,8 +96,15 @@ namespace spe.main
             __sr.Dispose();
         }
 
-        // Fonctions Privées
+        #endregion
 
+        #region Fonctions.Privés
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="__longueur"></param>
+        /// <returns></returns>
         private string getNom(int __longueur)
         {
             string __nom = "";
@@ -90,6 +123,11 @@ namespace spe.main
             return __nom;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="__longueur"></param>
+        /// <returns></returns>
         private string getPrenomAleatoire(int __longueur)
         {
             string __prenom = "";
@@ -116,6 +154,10 @@ namespace spe.main
             return __prenom;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private string getPrenom()
         {
             string __prenom = getPrenomAleatoire(5 + Random.Next(10));
@@ -154,6 +196,12 @@ namespace spe.main
             return __prenom;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="__ageMin"></param>
+        /// <param name="__ageMax"></param>
+        /// <returns></returns>
         private DateTime getDateNaissance(int __ageMin, int __ageMax)
         {
             DateTime __dateNaissance = DateTime.Now;
@@ -172,6 +220,10 @@ namespace spe.main
             return __dateNaissance;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private string getLogin()
         {
             string __login = "";
@@ -210,6 +262,10 @@ namespace spe.main
             return __login;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private string getPassword()
         {
             string __password = "";
@@ -248,6 +304,13 @@ namespace spe.main
             return __password;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="__source"></param>
+        /// <param name="__modele"></param>
+        /// <param name="__liste"></param>
+        /// <param name="__avec"></param>
         private void getListeFromModele(string __source, string __modele, ref List<string> __liste, bool __avec)
         {
             __liste.Clear();
@@ -281,6 +344,10 @@ namespace spe.main
                 }
             }
         }
+
+        #endregion
+
+        #endregion
 
     }
 }
