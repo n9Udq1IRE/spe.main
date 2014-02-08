@@ -10,6 +10,7 @@ namespace spe.main
     class Identity
     {
         private Random Random = new Random();
+        private char[] __speciaux = { '~', '!', '@', '#', '$', '%', '^', '*', '(', ')', '_', '-', '+', '=', '{', '}', '[', ']', '|', ':', ';', '"', ',', '?' };
         private char[] __entiers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         private char[] __majuscules = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
         private char[] __majusculesConsonnes = { 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Z' };
@@ -27,18 +28,21 @@ namespace spe.main
 
         public Identity()
         {
-            Nom = getNom(9);
-            Prenom = getPrenom(9);
-            DateNaissance = getDateNaissance(30, 40);
+            Nom = getNom(5 + Random.Next(10));
+            Prenom = getPrenom(5 + Random.Next(10));
+            DateNaissance = getDateNaissance(18, 18 + Random.Next(50));
             AdresseMail = Prenom.ToLower() + "." + Nom.ToLower() + "@unimedia.fr";
-            Login = getLogin(9);
-            Password = getPassword(9);
-            save();
+            Login = getLogin();
+            Password = getPassword();
         }
 
-        private void save()
+        public void save(string __file = "")
         {
-            StreamWriter __sr = new StreamWriter(String.Format("../../output/identity.{0:yyyyMMddHHmmss}.txt", DateTime.Now), false);
+            if (__file == "")
+            {
+                __file = String.Format("../../output/identity.{0:yyyyMMddHHmmss}.txt", DateTime.Now);
+            }
+            StreamWriter __sr = new StreamWriter(__file, false);
             __sr.WriteLine(String.Format("Nom : {0}", Nom));
             __sr.WriteLine(String.Format("Prenom : {0}", Prenom));
             __sr.WriteLine(String.Format("DateNaissance : {0}", DateNaissance));
@@ -111,44 +115,76 @@ namespace spe.main
             return __dateNaissance;
         }
 
-        private string getLogin(int __longeur)
+        private string getLogin()
         {
             string __login = "";
-            while (__login.Length < __longeur)
+            string __loginTemp = "";
+            __loginTemp += __majuscules[Random.Next(__majuscules.Length)];
+            __loginTemp += __majuscules[Random.Next(__majuscules.Length)];
+            __loginTemp += __majuscules[Random.Next(__majuscules.Length)];
+            __loginTemp += __majuscules[Random.Next(__majuscules.Length)];
+            __loginTemp += __minuscules[Random.Next(__minuscules.Length)];
+            __loginTemp += __minuscules[Random.Next(__minuscules.Length)];
+            __loginTemp += __minuscules[Random.Next(__minuscules.Length)];
+            __loginTemp += __minuscules[Random.Next(__minuscules.Length)];
+            while (__loginTemp != "")
             {
-                switch (Random.Next(3))
+                int __index = Random.Next(__loginTemp.Length);
+                __login += __loginTemp[__index];
+                if (__index == 0)
                 {
-                    case 0:
-                        __login += __majuscules[Random.Next(__majuscules.Length)];;
-                        break;
-                    case 1:
-                        __login += __minuscules[Random.Next(__minuscules.Length)];;
-                        break;
-                    case 2:
-                        __login += __entiers[Random.Next(__entiers.Length)];;
-                        break;
+                    __loginTemp = __loginTemp.Substring(1);
+                }
+                else
+                {
+                    if (__index == __loginTemp.Length - 1)
+                    {
+                        __loginTemp = __loginTemp.Substring(0, __index);
+                    }
+                    else
+                    {
+                        __loginTemp = __loginTemp.Substring(0, __index) + __loginTemp.Substring(__index + 1);
+                    }
                 }
             }
+            __login += __entiers[Random.Next(__entiers.Length)];
+            __login += __entiers[Random.Next(__entiers.Length)];
 
             return __login;
         }
 
-        private string getPassword(int __longeur)
+        private string getPassword()
         {
             string __password = "";
-            while (__password.Length < __longeur)
+            string __passwordTemp = "";
+            __passwordTemp += __majuscules[Random.Next(__majuscules.Length)];
+            __passwordTemp += __majuscules[Random.Next(__majuscules.Length)];
+            __passwordTemp += __majuscules[Random.Next(__majuscules.Length)];
+            __passwordTemp += __minuscules[Random.Next(__minuscules.Length)];
+            __passwordTemp += __minuscules[Random.Next(__minuscules.Length)];
+            __passwordTemp += __minuscules[Random.Next(__minuscules.Length)];
+            __passwordTemp += __entiers[Random.Next(__entiers.Length)];
+            __passwordTemp += __entiers[Random.Next(__entiers.Length)];
+            __passwordTemp += __speciaux[Random.Next(__speciaux.Length)];
+            __passwordTemp += __speciaux[Random.Next(__speciaux.Length)];
+            while (__passwordTemp != "")
             {
-                switch (Random.Next(3))
+                int __index = Random.Next(__passwordTemp.Length);
+                __password += __passwordTemp[__index];
+                if (__index == 0)
                 {
-                    case 0:
-                        __password += __majuscules[Random.Next(__majuscules.Length)]; ;
-                        break;
-                    case 1:
-                        __password += __minuscules[Random.Next(__minuscules.Length)]; ;
-                        break;
-                    case 2:
-                        __password += __entiers[Random.Next(__entiers.Length)]; ;
-                        break;
+                    __passwordTemp = __passwordTemp.Substring(1);
+                }
+                else
+                {
+                    if (__index == __passwordTemp.Length - 1)
+                    {
+                        __passwordTemp = __passwordTemp.Substring(0, __index);
+                    }
+                    else
+                    {
+                        __passwordTemp = __passwordTemp.Substring(0, __index) + __passwordTemp.Substring(__index + 1);
+                    }
                 }
             }
 
