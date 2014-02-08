@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="output\identity.20140207130402.txt" />
     <Content Include="output\identity.20140207214018.txt" />
     <Content Include="output\identity.20140207214235.txt" />
   </ItemGroup>
