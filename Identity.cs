@@ -228,14 +228,18 @@ namespace spe.main
         {
             string __login = "";
             string __loginTemp = "";
-            __loginTemp += __majuscules[Random.Next(__majuscules.Length)];
-            __loginTemp += __majuscules[Random.Next(__majuscules.Length)];
-            __loginTemp += __majuscules[Random.Next(__majuscules.Length)];
-            __loginTemp += __majuscules[Random.Next(__majuscules.Length)];
-            __loginTemp += __minuscules[Random.Next(__minuscules.Length)];
-            __loginTemp += __minuscules[Random.Next(__minuscules.Length)];
-            __loginTemp += __minuscules[Random.Next(__minuscules.Length)];
-            __loginTemp += __minuscules[Random.Next(__minuscules.Length)];
+            int __nbre = 1;
+            while (__nbre <= 5)
+            {
+                __loginTemp += __majuscules[Random.Next(__majuscules.Length)];
+                __nbre++;
+            }
+            __nbre = 1;
+            while (__nbre <= 5)
+            {
+                __loginTemp += __minuscules[Random.Next(__minuscules.Length)];
+                __nbre++;
+            }
             while (__loginTemp != "")
             {
                 int __index = Random.Next(__loginTemp.Length);
@@ -268,27 +272,36 @@ namespace spe.main
         /// <returns></returns>
         private string getPassword()
         {
+            /*
+                https://www.microsoft.com/security/pc-security/password-checker.aspx
+                http://www.passwordmeter.com
+                http://rumkin.com/tools/password/passchk.php
+             */
             string __password = "";
             string __passwordTemp = "";
             int __nbre = 1;
-            while (__nbre <= 3)
+            while (__nbre <= 7)
             {
-                __passwordTemp += __majuscules[Random.Next(__majuscules.Length)]; __nbre++;
+                __passwordTemp += __majuscules[Random.Next(__majuscules.Length)];
+                __nbre++;
             }
             __nbre = 1;
-            while (__nbre <= 3)
+            while (__nbre <= 7)
             {
-                __passwordTemp += __minuscules[Random.Next(__minuscules.Length)]; __nbre++;
+                __passwordTemp += __minuscules[Random.Next(__minuscules.Length)];
+                __nbre++;
             }
             __nbre = 1;
-            while (__nbre <= 2)
+            while (__nbre <= 5)
             {
-                __passwordTemp += __entiers[Random.Next(__entiers.Length)]; __nbre++;
+                __passwordTemp += __entiers[Random.Next(__entiers.Length)];
+                __nbre++;
             }
             __nbre = 1;
-            while (__nbre <= 2)
+            while (__nbre <= 5)
             {
-                __passwordTemp += __speciaux[Random.Next(__speciaux.Length)]; __nbre++;
+                __passwordTemp += __speciaux[Random.Next(__speciaux.Length)];
+                __nbre++;
             }
             while (__passwordTemp != "")
             {

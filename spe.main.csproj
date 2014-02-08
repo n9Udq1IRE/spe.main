@@ -54,6 +54,7 @@
     <Content Include="output\gitub.com\identity.20140207130402.txt" />
     <Content Include="output\identity.20140207214018.txt" />
     <Content Include="output\identity.20140207214235.txt" />
+    <Content Include="Notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
