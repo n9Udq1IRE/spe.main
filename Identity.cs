@@ -276,7 +276,7 @@ namespace spe.main
                 https://www.microsoft.com/security/pc-security/password-checker.aspx
                 http://www.passwordmeter.com
                 http://rumkin.com/tools/password/passchk.php
-             */
+            */
             string __password = "";
             string __passwordTemp = "";
             int __nbre = 1;
