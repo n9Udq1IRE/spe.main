@@ -17,7 +17,7 @@ namespace spe.main
             Feminin = 1
         }
 
-        // Attributs
+        // Attributs Privés
         private Random Random = new Random();
         private char[] __speciaux = { '~', '!', '@', '#', '$', '%', '^', '*', '(', ')', '_', '-', '+', '=', '{', '}', '[', ']', '|', ':', ';', '"', ',', '?' };
         private char[] __entiers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
@@ -28,6 +28,7 @@ namespace spe.main
         private char[] __minusculesConsonnes = { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z' };
         private char[] __minusculesVoyelles = { 'a', 'e', 'i', 'o', 'u', 'y' };
 
+        // Attributs Publiques
         public DateTime DateNaissance { get; set; }
         public EnumSexe Sexe { get; set; }
         public string Nom { get; set; }
