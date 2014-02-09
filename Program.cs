@@ -11,7 +11,7 @@ namespace spe.main
         static void Main(string[] args)
         {
             Identity __identity = new Identity();
-            __identity.save();
+            //__identity.save();
         }
     }
 }
