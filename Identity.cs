@@ -163,7 +163,7 @@ namespace spe.main
             string __prenom = getPrenomAleatoire(5 + Random.Next(10));
             // http://meilleursprenoms.com
             int __page = 1;
-            int __pageMax = Random.Next(5);
+            int __pageMax = Random.Next(5) + 1;
             List<string> __prenoms = new List<string>();
             WebClient __wc = new WebClient();
             bool __trouve = true;
