@@ -1,7 +1,0 @@
-DateNaissance : 22/02/1995 10:05:31
-Sexe : Masculin
-Nom : NYRUCUL
-Prenom : Florent
-AdresseMail : florent.nyrucul@unimedia.fr
-Login : WWttCpUGwc10
-Password : :uXB1]Nn53G3g~lOj^W7;egW

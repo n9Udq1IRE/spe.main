@@ -54,11 +54,10 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="input\meilleursprenoms.com\page.htm" />
+    <Content Include="output\aws.amazon.com\identity.20140213065152.txt" />
     <Content Include="output\facebook.com\identity.20140209204512.txt" />
     <Content Include="output\gitub.com\identity.20140207130402.txt" />
     <Content Include="output\google.com\identity.20140209200841.txt" />
-    <Content Include="output\identity.20140207214018.txt" />
-    <Content Include="output\identity.20140207214235.txt" />
     <Content Include="Notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
