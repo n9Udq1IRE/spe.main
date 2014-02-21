@@ -60,7 +60,6 @@
     <Content Include="output\facebook.com\identity.20140209204512.txt" />
     <Content Include="output\gitub.com\identity.20140207130402.txt" />
     <Content Include="output\google.com\identity.20140209200841.txt" />
-    <Content Include="Notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
