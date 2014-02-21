@@ -53,6 +53,8 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="input\codeposte.com\departements.htm" />
+    <Content Include="input\codeposte.com\villes.htm" />
     <Content Include="input\meilleursprenoms.com\page.htm" />
     <Content Include="output\facebook.com\identity.20140209204512.txt" />
     <Content Include="output\gitub.com\identity.20140207130402.txt" />

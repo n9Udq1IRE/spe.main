@@ -34,6 +34,8 @@ namespace spe.main
         private char[] __minuscules = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
         private char[] __minusculesConsonnes = { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z' };
         private char[] __minusculesVoyelles = { 'a', 'e', 'i', 'o', 'u', 'y' };
+        private string[] __typesVoies = { "Rue", "Allée", "Cour", "Boulevard", "Avenue" };
+        private string[] __indicatifsTelephoniques = { "06" };
 
         #endregion
 
@@ -43,9 +45,13 @@ namespace spe.main
         public EnumSexe Sexe { get; set; }
         public string Nom { get; set; }
         public string Prenom { get; set; }
-        public string AdresseMail { get; set; }
+        public string Mail { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
+        public string Adresse { get; set; }
+        public string CodePostal { get; set; }
+        public string Ville { get; set; }
+        public string Telephone { get; set; }
 
         #endregion
 
@@ -60,11 +66,13 @@ namespace spe.main
         {
             DateNaissance = getDateNaissance(18, 80);
             Sexe = (Random.Next(2) == 0) ? EnumSexe.Masculin : EnumSexe.Feminin;
-            Nom = getNom(5 + Random.Next(10));
-            Prenom = getPrenom();
-            AdresseMail = Prenom.ToLower() + "." + Nom.ToLower() + "@unimedia.fr";
+            Nom = getNom();
+            Prenom = getPrenom(Sexe);
+            Mail = Prenom.ToLower() + "." + Nom.ToLower() + "@unimedia.fr";
             Login = getLogin();
             Password = getPassword();
+            getAdresse();
+            Telephone = getTelephone();
         }
 
         #endregion
@@ -89,7 +97,9 @@ namespace spe.main
             __sr.WriteLine(String.Format("Sexe : {0}", __temp));
             __sr.WriteLine(String.Format("Nom : {0}", Nom));
             __sr.WriteLine(String.Format("Prenom : {0}", Prenom));
-            __sr.WriteLine(String.Format("AdresseMail : {0}", AdresseMail));
+            __sr.WriteLine(String.Format("Adresse : {0} - {1} {2}", Adresse, CodePostal, Ville));
+            __sr.WriteLine(String.Format("Telephone : {0}", Telephone));
+            __sr.WriteLine(String.Format("Mail : {0}", Mail));
             __sr.WriteLine(String.Format("Login : {0}", Login));
             __sr.WriteLine(String.Format("Password : {0}", Password));
             __sr.Close();
@@ -100,14 +110,10 @@ namespace spe.main
 
         #region Fonctions.Privés
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="__longueur"></param>
-        /// <returns></returns>
-        private string getNom(int __longueur)
+        private string getNomAleatoire()
         {
             string __nom = "";
+            int __longueur = 5 + Random.Next(10);
             while (__nom.Length < __longueur)
             {
                 if (__nom.Length % 2 == 0)
@@ -119,6 +125,39 @@ namespace spe.main
                     __nom += __majusculesVoyelles[Random.Next(__majusculesVoyelles.Length)];
                 }
             }
+
+            return __nom;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="__longueur"></param>
+        /// <returns></returns>
+        private string getNom()
+        {
+            string __nom = getNomAleatoire();
+            WebClient __wc = new WebClient();
+            string __url = "http://www.nom-famille.com/noms-les-plus-portes-en-france.html";
+            string __source = __wc.DownloadString(__url);
+            List<string> __liste = new List<string>();
+            getListeFromModele(__source, "...  <a class=\"page\" href=\"http://www.nom-famille.com/noms-les-plus-portes-en-france-[*].html\">", ref __liste, false, true);
+            if (__liste.Count == 1)
+            {
+                int __count = 0;
+                if (int.TryParse(__liste[0], out __count))
+                {
+                    int __page = Random.Next(__count);
+                    __url = String.Format("http://www.nom-famille.com/noms-les-plus-portes-en-france-{0}.html", __page);
+                    __source = __wc.DownloadString(__url);
+                    getListeFromModele(__source, "<a class=\"nom\" href=\"http://www.nom-famille.com/nom-[*].html\">", ref __liste, false, true);
+                    if (__liste.Count > 0)
+                    {
+                        __nom = __liste[Random.Next(__liste.Count)].ToUpper().Replace("-" , " ");
+                    }
+                }
+            }
+            __wc.Dispose();
 
             return __nom;
         }
@@ -158,7 +197,7 @@ namespace spe.main
         /// 
         /// </summary>
         /// <returns></returns>
-        private string getPrenom()
+        private string getPrenom(EnumSexe __sexe)
         {
             string __prenom = getPrenomAleatoire(5 + Random.Next(10));
             // http://meilleursprenoms.com
@@ -179,7 +218,7 @@ namespace spe.main
                     getListeFromModele(__source, "<td class=\"mpfont\">[*]</td>", ref __valeurs, true);
                     if (__valeurs.Count == 3)
                     {
-                        __source = (Sexe == EnumSexe.Masculin) ? __source = __valeurs[1] : __source = __valeurs[2];
+                        __source = (__sexe == EnumSexe.Masculin) ? __source = __valeurs[1] : __source = __valeurs[2];
                         getListeFromModele(__source, "<a href=\"/stats/prenom.php3/[*]\">", ref __valeurs, false);
                         __prenoms.AddRange(__valeurs);
                         __trouve = true;
@@ -336,6 +375,18 @@ namespace spe.main
         /// <param name="__avec"></param>
         private void getListeFromModele(string __source, string __modele, ref List<string> __liste, bool __avec)
         {
+            getListeFromModele(__source, __modele, ref __liste, __avec, false);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="__source"></param>
+        /// <param name="__modele"></param>
+        /// <param name="__liste"></param>
+        /// <param name="__avec"></param>
+        private void getListeFromModele(string __source, string __modele, ref List<string> __liste, bool __avec, bool __distinct)
+        {
             __liste.Clear();
             string __debut = "";
             string __fin = "";
@@ -357,7 +408,17 @@ namespace spe.main
                             __valeur = __source.Substring(__indexDebut, (__indexFin - __indexDebut) + __fin.Length);
                         else
                             __valeur = __source.Substring(__indexDebut + __debut.Length, __indexFin - __indexDebut - __debut.Length);
-                        __liste.Add(__valeur);
+                        if (__distinct)
+                        {
+                            if (__liste.IndexOf(__valeur) == -1)
+                            {
+                                __liste.Add(__valeur);
+                            }
+                        }
+                        else
+                        {
+                            __liste.Add(__valeur);
+                        }
                         __indexDebut = __source.IndexOf(__debut, __indexFin + __fin.Length);
                         if (__indexDebut != -1)
                         {
@@ -366,6 +427,63 @@ namespace spe.main
                     }
                 }
             }
+        }
+
+        private void getAdresse()
+        {
+            Adresse = "";
+            CodePostal = "";
+            Ville = "";
+
+            // http://www.codeposte.com
+            List<string> __departements = new List<string>();
+            WebClient __wc = new WebClient();
+            string __source = __wc.DownloadString(String.Format("http://www.codeposte.com/codeposte_dept_fr.htm"));
+            getListeFromModele(__source, "\"http://www.codeposte.com/home.php?s_keyword=[*]\"", ref __departements, false);
+            if (__departements.Count > 0)
+            {
+                string __departement = __departements[Random.Next(__departements.Count)];
+                __source = __wc.DownloadString(String.Format("http://www.codeposte.com/home.php?s_keyword={0}", __departement));
+
+                List<string> __villesTemp = new List<string>();
+                List<string> __codesTemp = new List<string>();
+                getListeFromModele(__source, "<td class=\"row\" width=\"260\" align=\"center\">[*]</td>", ref __villesTemp, false);
+                getListeFromModele(__source, "<td class=\"row\" align=\"center\" width=\"58\">[*]</td> ", ref __codesTemp, false);
+                if (__villesTemp.Count == __codesTemp.Count)
+                {
+                    List<string> __villes = new List<string>();
+                    List<string> __codes = new List<string>();
+                    int __index = 0;
+                    while (__index < __villesTemp.Count)
+                    {
+                        if (__villesTemp[__index] != "")
+                        {
+                            __villes.Add(__villesTemp[__index]);
+                            __codes.Add(__codesTemp[__index]);
+                        }
+                        __index++;
+                    }
+                    int __hasard = Random.Next(__villes.Count);
+                    CodePostal = __codes[__hasard];
+                    Ville = __villes[__hasard].ToUpper();
+                    EnumSexe __sexe = (Random.Next(2) == 0) ? EnumSexe.Masculin : EnumSexe.Feminin;
+                    Adresse = String.Format("{0}, {1} {2} {3}", Random.Next(99), __typesVoies[Random.Next(__typesVoies.Length)], getPrenom(__sexe), getNom());
+                }
+            }
+            __wc.Dispose();
+
+            return;
+        }
+
+        private string getTelephone()
+        {
+            string __telephone = __indicatifsTelephoniques[Random.Next(__indicatifsTelephoniques.Length)];
+            while (__telephone.Length < 10)
+            {
+                __telephone += __entiers[Random.Next(__entiers.Length)];
+            }
+
+            return __telephone;
         }
 
         #endregion
