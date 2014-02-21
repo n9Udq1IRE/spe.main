@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Net;
+using System.Xml;
 
 namespace spe.main
 {
@@ -34,7 +35,7 @@ namespace spe.main
         private char[] __minuscules = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
         private char[] __minusculesConsonnes = { 'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z' };
         private char[] __minusculesVoyelles = { 'a', 'e', 'i', 'o', 'u', 'y' };
-        private string[] __typesVoies = { "Rue", "Allée", "Cour", "Boulevard", "Avenue" };
+        private string[] __typesVoies = { "Rue", "Boulevard", "Avenue", "Impasse", "Square" };
         private string[] __indicatifsTelephoniques = { "06" };
 
         #endregion
@@ -64,55 +65,10 @@ namespace spe.main
         /// </summary>
         public Identity()
         {
-
-            /*string __url = "http://www.nom-famille.com/noms-les-plus-portes-en-france-{0}.html";
-            WebClient __wc = new WebClient();
-            int __index = 1;
-            while (__index < 986)
-            {
-                string __source = __wc.DownloadString(String.Format(__url, __index));
-                StreamWriter __sr = new StreamWriter(String.Format("noms-les-plus-portes-en-france-{0}.html", __index), false);
-                __sr.Write(__source);
-                __sr.Close();
-                __sr.Dispose();
-                __index++;
-            }
-            __wc.Dispose();*/
-
-            /*List<string> __prenoms = new List<string>();
-            int __index = 1;
-            while (__index < 986)
-            {
-                StreamReader __sr = new StreamReader(String.Format("noms-les-plus-portes-en-france-{0}.html", __index));
-                string __source = __sr.ReadToEnd();
-                List<string> __temp = new List<string>();
-                getListeFromModele(__source, "<table cellpadding=\"0\" cellspacing=\"2\" width=\"95%\" align=\"center\">[*]</td></tr></table>", ref __temp, true);
-                if (__temp.Count == 1)
-                {
-                    List<string> __prenomsTemp = new List<string>();
-                    getListeFromModele(__temp[0], "<a class=\"nom\" href=\"http://www.nom-famille.com/nom-[*].html\">", ref __prenomsTemp, false, true);
-                    __prenoms.AddRange(__prenomsTemp);
-                }
-                else
-                {
-                    Console.Write("");
-                }
-                __sr.Close();
-                __sr.Dispose();
-                __index++;
-            }
-            StreamWriter __writer = new StreamWriter("prenoms.xml", false);
-            foreach (string __prenom in __prenoms)
-            {
-                __writer.WriteLine(String.Format("<prenom>{0}</prenom>", __prenom));
-            }
-            __writer.Close();
-            __writer.Dispose();*/
-
             DateNaissance = getDateNaissance(18, 80);
             Sexe = (Random.Next(2) == 0) ? EnumSexe.Masculin : EnumSexe.Feminin;
             Nom = getNom();
-            Prenom = getPrenom(Sexe);
+            Prenom = getPrenom(Sexe, DateNaissance);
             Mail = Prenom.ToLower() + "." + Nom.ToLower() + "@unimedia.fr";
             Login = getLogin();
             Password = getPassword();
@@ -182,7 +138,19 @@ namespace spe.main
         private string getNom()
         {
             string __nom = getNomAleatoire();
-            WebClient __wc = new WebClient();
+
+            XmlDocument __xml = new XmlDocument();
+            __xml.Load("noms.xml");
+            if (__xml != null)
+            {
+                XmlNodeList __noms = __xml.SelectNodes("noms/nom");
+                if (__noms.Count > 0)
+                {
+                    __nom = __noms[Random.Next(__noms.Count)].InnerText.ToUpper().Replace("-", " ");
+                }
+            }
+            #region Ancienne Méthode LIVE
+            /*WebClient __wc = new WebClient();
             string __url = "http://www.nom-famille.com/noms-les-plus-portes-en-france.html";
             string __source = __wc.DownloadString(__url);
             List<string> __liste = new List<string>();
@@ -202,7 +170,8 @@ namespace spe.main
                     }
                 }
             }
-            __wc.Dispose();
+            __wc.Dispose();*/
+            #endregion
 
             return __nom;
         }
@@ -242,10 +211,22 @@ namespace spe.main
         /// 
         /// </summary>
         /// <returns></returns>
-        private string getPrenom(EnumSexe __sexe)
+        private string getPrenom(EnumSexe __sexe, DateTime __date)
         {
             string __prenom = getPrenomAleatoire(5 + Random.Next(10));
-            // http://meilleursprenoms.com
+            XmlDocument __xml = new XmlDocument();
+            __xml.Load("prenoms.xml");
+            if (__xml != null)
+            {
+                string __idSexe = (__sexe == EnumSexe.Feminin) ? "Feminin" : "Masculin";
+                XmlNodeList __prenoms = __xml.SelectNodes(String.Format("prenoms/top[@annee='{0}']/sexe[@id='{1}']/prenom", __date.Year, __idSexe));
+                if (__prenoms.Count > 0)
+                {
+                    __prenom = __prenoms[Random.Next(__prenoms.Count)].InnerText;
+                }
+            }
+            #region Ancienne Méthode LIVE
+            /*// http://meilleursprenoms.com
             int __page = 1;
             int __pageMax = Random.Next(5) + 1;
             List<string> __prenoms = new List<string>();
@@ -275,7 +256,8 @@ namespace spe.main
             if (__prenoms.Count > 0)
             {
                 __prenom = __prenoms[Random.Next(__prenoms.Count)];
-            }
+            }*/
+            #endregion
             
             return __prenom;
         }
@@ -512,7 +494,7 @@ namespace spe.main
                     CodePostal = __codes[__hasard];
                     Ville = __villes[__hasard].ToUpper();
                     EnumSexe __sexe = (Random.Next(2) == 0) ? EnumSexe.Masculin : EnumSexe.Feminin;
-                    Adresse = String.Format("{0}, {1} {2} {3}", Random.Next(99), __typesVoies[Random.Next(__typesVoies.Length)], getPrenom(__sexe), getNom());
+                    Adresse = String.Format("{0}, {1} {2} {3}", Random.Next(99) + 1, __typesVoies[Random.Next(__typesVoies.Length)], getPrenom(__sexe, getDateNaissance(18, 80)), getNom());
                 }
             }
             __wc.Dispose();

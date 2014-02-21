@@ -12,8 +12,13 @@ namespace spe.main
     {
         static void Main(string[] args)
         {
-            Identity __identity = new Identity();
-            __identity.save();
+            int __index = 0;
+            while (__index < 1)
+            {
+                Identity __identity = new Identity();
+                __identity.save();
+                __index++;
+            }
         }
     }
 }
