@@ -64,6 +64,51 @@ namespace spe.main
         /// </summary>
         public Identity()
         {
+
+            /*string __url = "http://www.nom-famille.com/noms-les-plus-portes-en-france-{0}.html";
+            WebClient __wc = new WebClient();
+            int __index = 1;
+            while (__index < 986)
+            {
+                string __source = __wc.DownloadString(String.Format(__url, __index));
+                StreamWriter __sr = new StreamWriter(String.Format("noms-les-plus-portes-en-france-{0}.html", __index), false);
+                __sr.Write(__source);
+                __sr.Close();
+                __sr.Dispose();
+                __index++;
+            }
+            __wc.Dispose();*/
+
+            /*List<string> __prenoms = new List<string>();
+            int __index = 1;
+            while (__index < 986)
+            {
+                StreamReader __sr = new StreamReader(String.Format("noms-les-plus-portes-en-france-{0}.html", __index));
+                string __source = __sr.ReadToEnd();
+                List<string> __temp = new List<string>();
+                getListeFromModele(__source, "<table cellpadding=\"0\" cellspacing=\"2\" width=\"95%\" align=\"center\">[*]</td></tr></table>", ref __temp, true);
+                if (__temp.Count == 1)
+                {
+                    List<string> __prenomsTemp = new List<string>();
+                    getListeFromModele(__temp[0], "<a class=\"nom\" href=\"http://www.nom-famille.com/nom-[*].html\">", ref __prenomsTemp, false, true);
+                    __prenoms.AddRange(__prenomsTemp);
+                }
+                else
+                {
+                    Console.Write("");
+                }
+                __sr.Close();
+                __sr.Dispose();
+                __index++;
+            }
+            StreamWriter __writer = new StreamWriter("prenoms.xml", false);
+            foreach (string __prenom in __prenoms)
+            {
+                __writer.WriteLine(String.Format("<prenom>{0}</prenom>", __prenom));
+            }
+            __writer.Close();
+            __writer.Dispose();*/
+
             DateNaissance = getDateNaissance(18, 80);
             Sexe = (Random.Next(2) == 0) ? EnumSexe.Masculin : EnumSexe.Feminin;
             Nom = getNom();
