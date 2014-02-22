@@ -458,11 +458,25 @@ namespace spe.main
 
         private void getAdresse()
         {
-            Adresse = "";
+            EnumSexe __sexe = (Random.Next(2) == 0) ? EnumSexe.Masculin : EnumSexe.Feminin;
+            Adresse = String.Format("{0}, {1} {2} {3}", Random.Next(99) + 1, __typesVoies[Random.Next(__typesVoies.Length)], getPrenom(__sexe, getDateNaissance(18, 80)), getNom());
             CodePostal = "";
             Ville = "";
-
-            // http://www.codeposte.com
+            XmlDocument __xml = new XmlDocument();
+            __xml.Load("villes.xml");
+            if (__xml != null)
+            {
+                string __idSexe = (__sexe == EnumSexe.Feminin) ? "Feminin" : "Masculin";
+                XmlNodeList __villes = __xml.SelectNodes("villes/ville");
+                if (__villes.Count > 0)
+                {
+                    int __index = Random.Next(__villes.Count);
+                    Ville = __villes[__index].InnerText;
+                    CodePostal = __villes[__index].Attributes["codePostal"].Value;
+                }
+            }
+            #region Ancienne Méthode LIVE
+            /*// http://www.codeposte.com
             List<string> __departements = new List<string>();
             WebClient __wc = new WebClient();
             string __source = __wc.DownloadString(String.Format("http://www.codeposte.com/codeposte_dept_fr.htm"));
@@ -497,7 +511,8 @@ namespace spe.main
                     Adresse = String.Format("{0}, {1} {2} {3}", Random.Next(99) + 1, __typesVoies[Random.Next(__typesVoies.Length)], getPrenom(__sexe, getDateNaissance(18, 80)), getNom());
                 }
             }
-            __wc.Dispose();
+            __wc.Dispose();*/
+            #endregion
 
             return;
         }

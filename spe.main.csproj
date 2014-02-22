@@ -58,10 +58,12 @@
     <Content Include="input\meilleursprenoms.com\page.htm" />
     <Content Include="input\noms.xml" />
     <Content Include="input\prenoms.xml" />
+    <Content Include="input\villes.xml" />
     <Content Include="output\aws.amazon.com\identity.20140213065152.txt" />
     <Content Include="output\facebook.com\identity.20140209204512.txt" />
     <Content Include="output\gitub.com\identity.20140207130402.txt" />
     <Content Include="output\google.com\identity.20140209200841.txt" />
+    <Content Include="temp\Code004.txt" />
     <Content Include="temp\Code003.txt" />
     <Content Include="temp\Code002.txt" />
     <Content Include="temp\Code001.txt" />
