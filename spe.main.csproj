@@ -53,9 +53,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="input\codeposte.com\departements.htm" />
-    <Content Include="input\codeposte.com\villes.htm" />
-    <Content Include="input\meilleursprenoms.com\page.htm" />
     <Content Include="input\noms.xml" />
     <Content Include="input\prenoms.xml" />
     <Content Include="input\villes.xml" />
