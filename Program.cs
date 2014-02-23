@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Net;
+using System.Threading;
 
 namespace spe.main
 {
@@ -12,11 +13,13 @@ namespace spe.main
     {
         static void Main(string[] args)
         {
+            Identity __identity = new Identity();
             int __index = 0;
             while (__index < 1)
             {
-                Identity __identity = new Identity();
+                __identity.create();
                 __identity.save();
+                Thread.Sleep(1);
                 __index++;
             }
         }

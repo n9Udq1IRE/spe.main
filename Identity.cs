@@ -27,6 +27,11 @@ namespace spe.main
         #region Attributs.Privés
 
         private Random Random = new Random();
+        private XmlDocument XmlNoms = new XmlDocument();
+        private XmlNodeList XmlNodeListNoms = null;
+        private XmlDocument XmlPrenoms = new XmlDocument();
+        private XmlDocument XmlVilles = new XmlDocument();
+        private XmlNodeList XmlNodeListVilles = null;
         private char[] __speciaux = { '~', '!', '@', '#', '$', '%', '^', '*', '(', ')', '_', '-', '+', '=', '{', '}', '[', ']', '|', ':', ';', '"', ',', '?' };
         private char[] __entiers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         private char[] __majuscules = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
@@ -65,6 +70,27 @@ namespace spe.main
         /// </summary>
         public Identity()
         {
+            XmlNoms.Load("noms.xml");
+            if (XmlNoms != null)
+            {
+                XmlNodeListNoms = XmlNoms.SelectNodes("noms/nom");
+            }
+            XmlPrenoms.Load("prenoms.xml");
+            XmlVilles.Load("villes.xml");
+            if (XmlVilles != null)
+            {
+                XmlNodeListVilles = XmlVilles.SelectNodes("villes/ville");
+            }
+        }
+
+        #endregion
+
+        #region Fonctions
+
+        #region Fonctions.Publiques
+
+        public void create()
+        {
             DateNaissance = getDateNaissance(18, 80);
             Sexe = (Random.Next(2) == 0) ? EnumSexe.Masculin : EnumSexe.Feminin;
             Nom = getNom();
@@ -76,12 +102,6 @@ namespace spe.main
             Telephone = getTelephone();
         }
 
-        #endregion
-
-        #region Fonctions
-
-        #region Fonctions.Publiques
-
         /// <summary>
         /// 
         /// </summary>
@@ -90,7 +110,7 @@ namespace spe.main
         {
             if (__file == "")
             {
-                __file = String.Format("../../output/identity.{0:yyyyMMddHHmmss}.txt", DateTime.Now);
+                __file = String.Format("../../output/identity.{0:yyyyMMddHHmmssfff}.txt", DateTime.Now);
             }
             StreamWriter __sr = new StreamWriter(__file, false);
             __sr.WriteLine(String.Format("DateNaissance : {0}", DateNaissance));
@@ -139,15 +159,9 @@ namespace spe.main
         {
             string __nom = getNomAleatoire();
 
-            XmlDocument __xml = new XmlDocument();
-            __xml.Load("noms.xml");
-            if (__xml != null)
+            if (XmlNoms != null && XmlNodeListNoms != null && XmlNodeListNoms.Count > 0)
             {
-                XmlNodeList __noms = __xml.SelectNodes("noms/nom");
-                if (__noms.Count > 0)
-                {
-                    __nom = __noms[Random.Next(__noms.Count)].InnerText.ToUpper().Replace("-", " ");
-                }
+                __nom = XmlNodeListNoms[Random.Next(XmlNodeListNoms.Count)].InnerText.ToUpper().Replace("-", " ");
             }
             #region Ancienne Méthode LIVE
             /*WebClient __wc = new WebClient();
@@ -214,12 +228,10 @@ namespace spe.main
         private string getPrenom(EnumSexe __sexe, DateTime __date)
         {
             string __prenom = getPrenomAleatoire(5 + Random.Next(10));
-            XmlDocument __xml = new XmlDocument();
-            __xml.Load("prenoms.xml");
-            if (__xml != null)
+            if (XmlPrenoms != null)
             {
                 string __idSexe = (__sexe == EnumSexe.Feminin) ? "Feminin" : "Masculin";
-                XmlNodeList __prenoms = __xml.SelectNodes(String.Format("prenoms/top[@annee='{0}']/sexe[@id='{1}']/prenom", __date.Year, __idSexe));
+                XmlNodeList __prenoms = XmlPrenoms.SelectNodes(String.Format("prenoms/top[@annee='{0}']/sexe[@id='{1}']/prenom", __date.Year, __idSexe));
                 if (__prenoms.Count > 0)
                 {
                     __prenom = __prenoms[Random.Next(__prenoms.Count)].InnerText;
@@ -462,18 +474,12 @@ namespace spe.main
             Adresse = String.Format("{0}, {1} {2} {3}", Random.Next(99) + 1, __typesVoies[Random.Next(__typesVoies.Length)], getPrenom(__sexe, getDateNaissance(18, 80)), getNom());
             CodePostal = "";
             Ville = "";
-            XmlDocument __xml = new XmlDocument();
-            __xml.Load("villes.xml");
-            if (__xml != null)
+            if (XmlVilles != null && XmlNodeListVilles != null && XmlNodeListVilles.Count > 0)
             {
                 string __idSexe = (__sexe == EnumSexe.Feminin) ? "Feminin" : "Masculin";
-                XmlNodeList __villes = __xml.SelectNodes("villes/ville");
-                if (__villes.Count > 0)
-                {
-                    int __index = Random.Next(__villes.Count);
-                    Ville = __villes[__index].InnerText;
-                    CodePostal = __villes[__index].Attributes["codePostal"].Value;
-                }
+                int __index = Random.Next(XmlNodeListVilles.Count);
+                Ville = XmlNodeListVilles[__index].InnerText;
+                CodePostal = XmlNodeListVilles[__index].Attributes["codePostal"].Value;
             }
             #region Ancienne Méthode LIVE
             /*// http://www.codeposte.com
