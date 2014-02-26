@@ -95,11 +95,41 @@ namespace spe.main
             Sexe = (Random.Next(2) == 0) ? EnumSexe.Masculin : EnumSexe.Feminin;
             Nom = getNom();
             Prenom = getPrenom(Sexe, DateNaissance);
-            Mail = Prenom.ToLower() + "." + Nom.ToLower() + "@unimedia.fr";
+            Mail = supprimeCaracteresSpeciaux(Prenom.ToLower() + "." + Nom.ToLower()) + "@unimedia.fr";
             Login = getLogin();
             Password = getPassword();
             getAdresse();
             Telephone = getTelephone();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="__string"></param>
+        /// <returns></returns>
+        private string supprimeCaracteresSpeciaux(string __string)
+        {
+            string __ret = "";
+            int __index = 0;
+            while (__index < __string.Length)
+            {
+                string __caractere = __string.Substring(__index, 1);
+                if ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".IndexOf(__caractere) != -1)
+                {
+                    __ret += __caractere;
+                }
+                else
+                {
+                    __ret += ".";
+                }
+                __index++;
+            }
+            while (__ret.IndexOf("..") != -1)
+            {
+                __ret = __ret.Replace("..", ".");
+            }
+
+            return __ret;
         }
 
         /// <summary>
@@ -270,8 +300,37 @@ namespace spe.main
                 __prenom = __prenoms[Random.Next(__prenoms.Count)];
             }*/
             #endregion
-            
-            return __prenom;
+
+            return majusculeApresTiretOuEspace(__prenom);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="__string"></param>
+        /// <returns></returns>
+        private string majusculeApresTiretOuEspace(string __string)
+        {
+            string __ret = "";
+            bool __majuscule = false;
+            int __index = 0;
+            while (__index < __string.Length)
+            {
+                string __char = __string.Substring(__index, 1);
+                if (__majuscule && __char != "-" && __char != " ")
+                {
+                    __char = __char.ToUpper();
+                    __majuscule = false;
+                }
+                if (__char == "-" || __char == " ")
+                {
+                    __majuscule = true;
+                }
+                __ret += __char;
+                __index++;
+            }
+
+            return __ret;
         }
 
         /// <summary>
