@@ -15,7 +15,7 @@ namespace spe.main
         {
             Identity __identity = new Identity();
             int __index = 0;
-            while (__index < 1)
+            while (__index < 10)
             {
                 __identity.create();
                 __identity.save();
