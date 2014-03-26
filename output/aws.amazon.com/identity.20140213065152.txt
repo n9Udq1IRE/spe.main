@@ -1,7 +1,9 @@
 DateNaissance : 30/06/1970 18:10:18
 Sexe : Masculin
-Nom : JUZIHYR
+Nom : juzihyr
 Prenom : Gilles
-AdresseMail : gilles.juzihyr@unimedia.fr
+Adresse : 11, Boulevard Marinette LE CUNFF - 05470 CHATEAU-VILLE-VIEILLE
+Telephone : 0685518388
+Mail : gilles.juzihyr@unimedia.fr
 Login : SFPjiZBssi59
 Password : V0;Q2yw5*f,sW*3xn@CYGN6v
