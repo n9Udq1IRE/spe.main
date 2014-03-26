@@ -19,7 +19,7 @@ namespace spe.main
             {
                 __identity.create();
                 __identity.save();
-                Thread.Sleep(1);
+                //Thread.Sleep(1);
                 __index++;
             }
         }
